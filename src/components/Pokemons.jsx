@@ -1,7 +1,8 @@
 import { IconSearch } from "@tabler/icons-react";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PokemonList from "./PokemonList";
+import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 
 const INCREASE_LIMIT = 20;
 
@@ -10,12 +11,17 @@ const Pokemons = () => {
   const [limit, setLimit] = useState(INCREASE_LIMIT);
   const [pokemonName, setPokemonName] = useState("");
 
+  const buttonLimitDown = useRef();
+
+  const entry = useIntersectionObserver(buttonLimitDown, {});
+  const isVisible = !!entry?.isIntersecting;
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLimit(INCREASE_LIMIT)
+    setLimit(INCREASE_LIMIT);
     setPokemonName(e.target.pokemonName.value.toLowerCase());
   };
-  
+
   const pokemonsByName = pokemons.filter((pokemon) =>
     pokemon.name.includes(pokemonName)
   );
@@ -34,6 +40,10 @@ const Pokemons = () => {
       })
       .catch((err) => console.log(err));
   }, []);
+
+  useEffect(() => {
+    if (isVisible && pokemons.length !== 0) handleIncreaseLimit();
+  }, [isVisible]);
 
   return (
     <section>
@@ -54,6 +64,7 @@ const Pokemons = () => {
       <PokemonList pokemons={pokemonsByName.slice(0, limit)} />
       <button
         onClick={handleIncreaseLimit}
+        ref={buttonLimitDown}
         disabled={pokemonsByName.length === limit}
         className="mx-auto block mt-10 bg-blue-500 text-white px-4 py-1 rounded-md text-base hover:bg-blue-600 transition-colors disabled:bg-blue-700"
       >

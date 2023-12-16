@@ -9,7 +9,7 @@ function App() {
     showDetailPokemon,
     closeDetailPokemon,
     showPokmonById,
-    isLoading
+    isLoading,
   } = usePokemonContext();
 
   return (

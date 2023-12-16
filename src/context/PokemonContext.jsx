@@ -7,9 +7,10 @@ const PokemonProvider = ({ children }) => {
   const pokemon = usePokemon();
 
   return (
-    <PokemonContext.Provider value={{...pokemon}}>
+    <PokemonContext.Provider value={{ ...pokemon }}>
       {children}
     </PokemonContext.Provider>
   );
 };
+
 export default PokemonProvider;
